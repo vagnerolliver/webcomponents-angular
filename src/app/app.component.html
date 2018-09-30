@@ -2,6 +2,18 @@
     Panel Stateless
 </h1>
 
+<app-panel title="Meu Panel 1" [opened]="isOpen1" (toggle)="isOpen1 = !isOpen1">
+    <h2>Conteúdo do panel 1</h2>
+</app-panel>
+
+<app-panel title="Meu Panel 2" [opened]="isOpen2" (toggle)="isOpen2 = !isOpen2">
+    <h2>Conteúdo do panel 2</h2>
+</app-panel>
+
+<h1>
+    Accordion Statefull
+</h1>
+
 <app-accordion [collapsed]="true">
     <app-panel title="Meu Panel 1" [opened]="true">
         <h2>Conteúdo do panel 1</h2>
