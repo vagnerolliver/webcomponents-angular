@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'webcomponents';
+  isOpen = true;
+  isOpen2 = true;
 }
