@@ -8,12 +8,7 @@ import { ModalService } from '../../shared/modal/modal.service';
 })
 export class DriveAccordionComponent implements OnInit {
 
-    constructor(
-        private modal: ModalService,
-        // el: ElementRef
-    ) {
-        // this.modal.el = el;
-    }
+    constructor(private modal: ModalService) {}
 
     ngOnInit() {}
 

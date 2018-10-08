@@ -42,13 +42,45 @@ export class ModalService implements OnInit {
     }
 
     private build(title: string) {
-        this.modal = this.renderer.createElement('modal');
-        const text = this.renderer.createText(title);
+        const modal = this.modal = this.renderer.createElement('modal');
+        const body = this.document.body;
 
-        this.renderer.addClass(this.modal, 'my-modal');
-        this.renderer.appendChild(this.modal, text);
+        this.renderer.addClass(modal, 'modal-card');
 
-        this.renderer.appendChild(this.document.body, this.modal);
+        const contentHeader = this.getContentHeader();
+        const contentMain = this.getContentMain();
+        const contentFooter = this.getContentFooter();
+
+        const elementHeader = this.renderer.createElement('header');
+        const elementMain = this.renderer.createElement('main');
+        const elementFooter = this.renderer.createElement('footer');
+
+        this.renderer.addClass(elementHeader, 'card-header');
+        this.renderer.addClass(elementMain, 'card-main');
+        this.renderer.addClass(elementFooter, 'card-footer');
+
+        this.renderer.appendChild(elementHeader, contentHeader);
+        this.renderer.appendChild(elementMain, contentMain);
+        this.renderer.appendChild(elementFooter, contentFooter);
+
+        this.renderer.appendChild(modal, elementHeader);
+        this.renderer.appendChild(modal, elementMain);
+        this.renderer.appendChild(modal, elementFooter);
+
+        this.renderer.appendChild(body, modal);
+    }
+
+    getContentHeader() {
+        // TODO structure setting
+        return this.renderer.createText('header');
+    }
+
+    getContentMain() {
+        return this.renderer.createText('main');
+    }
+
+    getContentFooter() {
+        return this.renderer.createText('footer');
     }
 
     // getModal(): Observable<any> {
