@@ -108,6 +108,23 @@ export class WizardComponent implements OnInit, OnDestroy, AfterContentInit, DoC
     differ: any;
 
     /**
+     * Resets page completed states when navigating backwards. Can be set using
+     * the wizardForceForwardNavigation input.
+     *
+     * @memberof Wizard
+     *
+     */
+    @Input('wizardForceForwardNavigation')
+    set forceForward(value: boolean) {
+        this._forceForward = !!value;
+        this.navService.forceForwardNavigation = value;
+    }
+    private _forceForward: boolean = false;
+    get forceForward(): boolean {
+        return this._forceForward;
+    }
+
+    /**
      * Prevents ClrWizard from moving to the next page or closing itself on finishing.
      * Set using the wizardPreventDefaultNext input.
      *
@@ -153,18 +170,18 @@ export class WizardComponent implements OnInit, OnDestroy, AfterContentInit, DoC
     }
 
     /**
-     * Prevents ClrWizard from closing when the cancel button or close "X" is clicked.
-     * Set using the clrWizardPreventDefaultCancel input.
+     * Prevents Wizard from closing when the cancel button or close "X" is clicked.
+     * Set using the wizardPreventDefaultCancel input.
      *
      * Note that using stopCancel will require you to create your own calls to
-     * .close() in your host component to make the ClrWizard work as expected.
+     * .close() in your host component to make the Wizard work as expected.
      *
-     * Useful for doing checks or prompts before closing a ClrWizard.
+     * Useful for doing checks or prompts before closing a Wizard.
      *
      * @memberof Wizard
      *
      */
-    @Input('clrWizardPreventDefaultCancel')
+    @Input('wizardPreventDefaultCancel')
     set stopCancel(value: boolean) {
         this._stopCancel = !!value;
         this.navService.wizardHasAltCancel = value;
@@ -173,9 +190,11 @@ export class WizardComponent implements OnInit, OnDestroy, AfterContentInit, DoC
     get stopCancel(): boolean {
         return this._stopCancel;
     }
+
     constructor(
         public navService: WizardNavigationService,
         public pageService: WizardPageCollectionService,
+        public buttonService: WizardPageButtonsService,
         private elementRef: ElementRef,
         differs: IterableDiffers
     ) {
@@ -199,6 +218,71 @@ export class WizardComponent implements OnInit, OnDestroy, AfterContentInit, DoC
         });
 
         this.differ = differs.find([]).create(null);
+    }
+
+    /**
+     * Moves the wizard to the previous page.
+     *
+     * @name previous
+     * @memberof ClrWizard
+     */
+    public previous(): void {
+        this.navService.previous();
+    }
+
+    /**
+     * Includes a Boolean parameter that will skip checks and event emissions.
+     * If true, the wizard will move to the next page regardless of the state of
+     * its current page. This is useful for alternative navigation where event
+     * emissions have already been done and firing them again may cause an event loop.
+     *
+     * Generally, with alternative navigation, users are supplying their own checks
+     * and validation. So there is no point in superseding their business logic
+     * with our default behavior.
+     *
+     * If false, the wizard will execute default checks and emit events as normal.
+     * This is useful for custom buttons or programmatic workflows that are not
+     * executing the wizards default checks and emissions. It is another way to
+     * navigate without having to rewrite the wizard’s default functionality
+     * from scratch.
+     *
+     * By default, next() does not execute event emissions or checks because the
+     * 80% case is that this method will be called as part of an alternative
+     * navigation with clrWizardPreventDefaultNext.
+     *
+     * @name next
+     * @memberof ClrWizard
+     */
+    public next(skipChecksAndEmits: boolean = true): void {
+        if (skipChecksAndEmits) {
+        this.forceNext();
+        } else {
+        this.navService.next();
+        }
+    }
+
+    /**
+     * Includes a Boolean parameter that will skip checks and event emissions.
+     * If true, the wizard will  complete and close regardless of the state of
+     * its current page. This is useful for alternative navigation where event
+     * emissions have already been done and firing them again may cause an event loop.
+     *
+     * If false, the wizard will execute default checks and emit events before
+     * completing and closing.
+     *
+     * By default, finish() does not execute event emissions or checks because the
+     * 80% case is that this method will be called as part of an alternative
+     * navigation with wizardPreventDefaultNext.
+     *
+     * @name finish
+     * @memberof Wizard
+     */
+    public finish(skipChecksAndEmits: boolean = true): void {
+        if (skipChecksAndEmits) {
+            this.forceFinish();
+        } else {
+            this.navService.finish();
+        }
     }
 
     /**
@@ -241,6 +325,21 @@ export class WizardComponent implements OnInit, OnDestroy, AfterContentInit, DoC
         }
     }
 
+    /**
+     * Does the work of moving the wizard to the next page without the
+     * checks and emissions that other paths do. Good for a last step in an
+     * alternate workflow.
+     *
+     * Does the same thing as calling ClrWizard.next(true) or ClrWizard.next()
+     * without a parameter.
+     *
+     * @name forceNext
+     * @memberof ClrWizard
+     */
+    public forceNext(): void {
+        this.navService.forceNext();
+    }
+
     ngOnInit() {
         this.currentPageSubscription = this.navService.currentPageChanged.subscribe((page: WizardPageComponent) => {
             this.currentPageChanged.emit();
@@ -267,17 +366,20 @@ export class WizardComponent implements OnInit, OnDestroy, AfterContentInit, DoC
 
     public ngAfterContentInit() {
         this.pageService.pages = this.pages;
+        this.buttonService.buttonsReady = true;
     }
 
     public ngDoCheck() {
         const changes = this.differ.diff(this.pages);
         if (changes) {
             changes.forEachAddedItem((r: any) => {
+
                 this.navService.updateNavigation();
             });
 
             changes.forEachRemovedItem((r: any) => {
                 this.navService.updateNavigation();
+
             });
         }
     }

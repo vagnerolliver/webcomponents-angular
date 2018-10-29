@@ -4,7 +4,5 @@ import { Directive, TemplateRef } from '@angular/core';
   selector: '[appWizardPageButtons]'
 })
 export class WizardPageButtonsDirective {
-
   constructor(public pageButtonsTemplateRef: TemplateRef<any>) {}
-
 }

@@ -45,6 +45,8 @@ export class WizardPageComponent implements OnInit {
      */
     @Output('wizardPagePrimary') primaryButtonClicked: EventEmitter<string> = new EventEmitter();
 
+    @Output('wizardPageCustomButton') customButtonClicked: EventEmitter<string> = new EventEmitter();
+
     @Output('wzardPageFinish') finishButtonClicked: EventEmitter<WizardPageComponent> = new EventEmitter();
 
     @Output('wizardPageDanger') dangerButtonClicked: EventEmitter<WizardPageComponent> = new EventEmitter();
@@ -472,7 +474,6 @@ export class WizardPageComponent implements OnInit {
         if (!navService.currentPage && !navService.navServiceLoaded) {
             this.makeCurrent();
             this.navService.navServiceLoaded = true;
-            this.buttonService.buttonsReady = true;
         }
     }
 }

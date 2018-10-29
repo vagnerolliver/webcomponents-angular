@@ -4,3 +4,16 @@
 <main>
     <ng-content></ng-content>
 </main>
+
+<div class="modal-footer clr-wizard-footer">
+    <div class="clr-wizard-footer-buttons">
+        <div *ngIf="navService.currentPage && !navService.currentPage.hasButtons"
+            class="clr-wizard-footer-buttons-wrapper">
+            <ng-content select="app-wizard-page-button"></ng-content>
+        </div>
+        <div *ngIf="navService.currentPage && navService.currentPage.hasButtons"
+            class="clr-wizard-footer-buttons-wrapper">
+            <ng-template [ngTemplateOutlet]="navService.currentPage.buttons"></ng-template>
+        </div>
+    </div>
+</div>
