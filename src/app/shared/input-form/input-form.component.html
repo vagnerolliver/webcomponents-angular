@@ -1,0 +1,47 @@
+<div class="control">
+    <label class="label">{{ label }}
+        <span class="icon tooltip" [attr.data-tooltip]="tooltip" *ngIf="tooltip">
+            <i class="fas fa-question-circle"></i>
+        </span>
+        <em class="has-text-weight-normal" *ngIf="isOptional"> OPCIONAL</em>
+    </label>
+
+    <app-input-text
+        *ngIf="type === 'text'"
+        [placeholder]="placeholder"
+        (newValue)="update($event)"
+        [value]="value">
+    </app-input-text>
+
+    <app-input-textarea
+        *ngIf="type === 'textarea'"
+        [placeholder]="placeholder"
+        (newValue)="update($event)"
+        [value]="value">
+    </app-input-textarea>
+
+    <app-input-radio
+        *ngIf="type === 'radio'"
+        [placeholder]="placeholder"
+        (newValue)="update($event)"
+        [value]="value">
+    </app-input-radio>
+
+    <app-input-checkbox
+        *ngIf="type === 'checkbox'"
+        [placeholder]="placeholder"
+        (newValue)="update($event)"
+        [value]="value"
+        [items]="">
+    </app-input-checkbox>
+
+    <app-input-select
+        *ngIf="type === 'select'"
+        [placeholder]="placeholder"
+        (newValue)="update($event)"
+        [items]="items"
+        [value]="value">
+    </app-input-select>
+
+    <small *ngIf="hint"><em>{{ hint }}</em></small>
+</div>

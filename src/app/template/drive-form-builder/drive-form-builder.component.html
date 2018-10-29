@@ -1,0 +1,95 @@
+<section class="container">
+    <h1>WebformComponents - FormBuilder</h1>
+
+    <form [formGroup]="form">
+        <h2>DADOS PESSOAIS</h2>
+        <!-- <div class="columns is-multiline">
+            <div class="column is-6">
+                <app-input-form
+                    formControlName="firstName"
+                    type="text"
+                    label="Nome"
+                    tooltip="Aqui você preenche apenas seu nome"
+                    hint="esse é um campo obrigatório"
+                    required="true">
+                </app-input-form>
+            </div>
+            <div class="column is-6">
+                <app-input-form
+                    formControlName="lastName"
+                    type="text"
+                    label="Sobrenome">
+                </app-input-form>
+            </div>
+        </div> -->
+
+        <div class="columns">
+            <div class="column is-12">
+                <app-input-form
+                    formControlName="description"
+                    type="textarea"
+                    label="Descrição">
+                </app-input-form>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-3">
+                <app-input-form
+                    formControlName="state"
+                    type="select"
+                    label="Estado"
+                    [items]="dataStates">
+                </app-input-form>
+            </div>
+            <div class="column is-4">
+                <app-input-form
+                    formControlName="defaultValue"
+                    [type]="form.get('state').value === 'SC' ? 'checkbox' : 'text'"
+                    placeholder="Sim"
+                    label="Default">
+                </app-input-form>
+            </div>
+            <div class="column is-4">
+                <app-input-form
+                    formControlName="city"
+                    type="text"
+                    label="Cidade">
+                </app-input-form>
+            </div>
+        </div>
+
+        <div class="columns">
+            <input
+                formControlName="sexo"
+                type="checkbox">
+                Escola <br>
+
+        </div>
+
+        <div class="columns is-multiline">
+            <div class="column is-12">
+                ENDEREÇO
+            </div>
+            <div class="column is-6">
+                <app-input-form
+                    formControlName="street"
+                    type="text"
+                    label="Rua">
+                </app-input-form>
+            </div>
+            <div class="column is-6">
+                <app-input-form
+                    formControlName="cep"
+                    type="text"
+                    label="Cep">
+                </app-input-form>
+            </div>
+        </div>
+    </form>
+
+    <app-input-form></app-input-form>
+
+    {{ form.value | json}}
+
+</section>

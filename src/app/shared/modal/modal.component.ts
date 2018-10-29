@@ -7,8 +7,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ModalComponent implements OnInit {
 
+    private visible: boolean;
+
     constructor() { }
 
     ngOnInit() {}
+
+    setVisible(value: boolean) {
+        this.visible = true;
+    }
+
+    open() {
+        this.setVisible(true);
+    }
+
+    close() {
+        this.setVisible(false);
+    }
 
 }

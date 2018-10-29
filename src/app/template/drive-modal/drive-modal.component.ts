@@ -1,7 +1,8 @@
-import { Component, OnInit, Renderer2, ElementRef, Inject } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, Inject, ViewChild } from '@angular/core';
 import { ModalService } from '../../shared/modal/modal.service';
 import { ModalBase } from '../../shared/modal/modal.base';
 import { DOCUMENT } from '@angular/platform-browser';
+import { ModalComponent } from '../../shared/modal/modal.component';
 
 @Component({
     selector: 'app-drive-modal',
@@ -9,6 +10,8 @@ import { DOCUMENT } from '@angular/platform-browser';
     styleUrls: ['./drive-modal.component.sass']
 })
 export class DriveModalComponent extends ModalBase implements OnInit {
+
+    @ViewChild('meuModal') meuModal: any;
 
     constructor(
         render: Renderer2,
@@ -27,6 +30,10 @@ export class DriveModalComponent extends ModalBase implements OnInit {
     onClose() {
         this.close();
         // this.modal.close();
+    }
+
+    openModalTemplate() {
+        this.meuModal.open();
     }
 
 }

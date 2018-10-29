@@ -8,6 +8,9 @@ import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './/app-routing.module';
 import { DriveModalComponent } from './template/drive-modal/drive-modal.component';
 import { DriveAccordionComponent } from './template/drive-accordion/drive-accordion.component';
+import { DriveFormBuilderComponent } from './template/drive-form-builder/drive-form-builder.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DriveWizardComponent } from './template/drive-wizard/drive-wizard.component';
 
 @NgModule({
   declarations: [
@@ -16,11 +19,14 @@ import { DriveAccordionComponent } from './template/drive-accordion/drive-accord
     PanelComponent,
     DriveModalComponent,
     DriveAccordionComponent,
+    DriveFormBuilderComponent,
+    DriveWizardComponent
   ],
   imports: [
     BrowserModule,
     SharedModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

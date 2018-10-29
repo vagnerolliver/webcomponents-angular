@@ -1,3 +1,77 @@
 .modal {
     border: 1px solid black;
 }
+
+
+select,
+textarea {
+    width: 100%;
+}
+
+/* WIZARD */
+
+.wizard-page {
+    display: none
+}
+
+.wizard-page.is-active {
+    display: block;
+}
+
+.wizard-stepnav-list  {
+    background-color: #fafafa;
+    margin: 10px;
+}
+
+.wizard-stepnav-item {
+    margin-bottom: 5px;
+    padding: 5px;
+}
+.wizard-stepnav-link {
+    text-align: left;
+    background: transparent;
+    width: 100%;
+    border: 0;
+    padding: 10px;
+}
+.wizard-stepnav-item:not(.no-click) .wizard-stepnav-link {
+    cursor: pointer;
+}
+
+.wizard-stepnav-item.complete {
+    box-shadow: 0.166667rem 0 0 #60b515 inset;
+}
+
+.wizard-stepnav-item.is-active .wizard-stepnav-link {
+    background-color: #d9e4ea;
+}
+
+.wizard-btn {
+
+}
+
+.wizard-btn.btn-link {
+
+}
+
+.btn-primary {
+    background-color: purple;
+}
+
+.btn-success {
+    background-color: green;
+}
+
+.btn-danger {
+    background-color: rebeccapurple
+}
+
+.wizard-btn--tertiary {
+    background-color: yellow;
+}
+.wizard-btn--secondary {
+    background-color: pink;
+}
+.wizard-btn--primary {
+    background-color: purple;
+}

@@ -1,0 +1,8 @@
+<select
+    class="select"
+    (change)="onChange($event.target.value)">
+    <option value="" default>{{ placeholder }}</option>
+    <option *ngFor="let item of items" [selected]="item.value === value ? 'selected': ''" [value]="item.value">
+        {{ item.key }}
+    </option>
+</select>
