@@ -45,11 +45,13 @@ export class DriveModalComponent implements OnInit {
             if (resp === 'cancel') {
                 console.log('resp cancel');
                 console.log(resp);
+                myModal.unsubscribe();
             }
 
             if (resp === 'confirm') {
                 console.log('resp confirm');
                 console.log(resp);
+                myModal.unsubscribe();
             }
         });
 
