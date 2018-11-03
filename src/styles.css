@@ -75,3 +75,20 @@ textarea {
 .wizard-btn--primary {
     background-color: purple;
 }
+
+
+/*  */
+
+.steps .step-item.is-complete::before {
+    background-position: left bottom;
+}
+
+.steps .step-item.is-complete .step-marker {
+    background-color: #7d1e78 !important;
+}
+
+.steps .step-item.is-active .step-marker {
+    background-color: #fff;
+    border-color: #7d1e78;
+    color: #7d1e78;
+}

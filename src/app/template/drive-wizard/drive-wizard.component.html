@@ -1,5 +1,5 @@
 
-<app-wizard #wizard>
+<app-wizard #wizard [wizardForceForwardNavigation]="true">
 
     <app-wizard-page-button [type]="'cancel'">Cancel</app-wizard-page-button>
     <app-wizard-page-button [type]="'previous'">Back</app-wizard-page-button>
@@ -11,12 +11,25 @@
         <p class="content-for-page-1">Content for step 1</p>
     </app-wizard-page>
 
-    <app-wizard-page>
+    <app-wizard-page (wizardPageCustomButton)="doCustomClick($event)">
+        <!-- <ng-template appWizardPageButtons>
+            <app-wizard-page-button [type]="'cancel'">Page Override</app-wizard-page-button>
+            <app-wizard-page-button [type]="'custom-previous'">Custom</app-wizard-page-button>
+            <app-wizard-page-button [type]="'custom-next'">Custom</app-wizard-page-button>
+        </ng-template> -->
         <ng-template appWizardPageNavTitle>Step 2</ng-template>
         <p class="content-for-page-3">Content for step 2</p>
    </app-wizard-page>
 
-   <app-wizard-page>
+   <app-wizard-page (wizardPageOnLoad)="wizard.finish(false);" (wizardPageCustomButton)="doCustomClick($event)">
+        <button  type="submit" class="btn btn-danger" (click)="handleDangerClick()">
+            Finalizar
+        </button>
+        <!-- <ng-template appWizardPageButtons>
+            <app-wizard-page-button [type]="'cancel'">Page Override</app-wizard-page-button>
+            <app-wizard-page-button [type]="'previous'">Page Override</app-wizard-page-button>
+            <app-wizard-page-button [type]="'custom-danger'">Próximo</app-wizard-page-button>
+        </ng-template> -->
         <ng-template appWizardPageNavTitle>Step 3</ng-template>
         <p class="content-for-page-2">Content for step 3</p>
     </app-wizard-page>

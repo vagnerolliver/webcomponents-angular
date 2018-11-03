@@ -5,11 +5,7 @@ import { WizardPageComponent } from '../wizard-page/wizard-page.component';
 
 @Component({
   selector: '[app-wizard-stepnav-item]',
-  template: `
-    <button type="button" class="btn btn-link wizard-stepnav-link" (click)="click()">
-      <ng-template [ngTemplateOutlet]="page.navTitle"></ng-template>
-    </button>
-  `,
+  templateUrl: 'wizard-stepnav-item.html',
   host: {
     '[id]': 'id',
     '[attr.aria-selected]': 'isCurrent',
@@ -20,7 +16,7 @@ import { WizardPageComponent } from '../wizard-page/wizard-page.component';
     '[class.is-active]': 'isCurrent',
     '[class.disabled]': 'isDisabled',
     '[class.no-click]': '!canNavigate',
-    '[class.complete]': 'isComplete',
+    '[class.is-complete]': 'isComplete',
   },
  })
 export class WizardStepnavItemComponent {

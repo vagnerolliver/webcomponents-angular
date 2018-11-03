@@ -38,7 +38,7 @@ export const CUSTOM_BUTTON_TYPES: any = {
         <ng-content></ng-content>
     </button>`,
   host: { class: 'wizard-btn-wrapper', '[attr.aria-hidden]': 'isHidden' },
-  styles: ['[aria-hidden="true"] { display: none; }'],
+  styleUrls: ['./wizard-page.component.sass']
 })
 export class WizardPageButtonComponent {
     @Input('type') public type: string = '';

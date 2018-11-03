@@ -42,6 +42,12 @@ export class WizardNavigationService implements OnDestroy {
      */
     public finishButtonSubscription: Subscription;
 
+    /**
+     * Is notified when a Custom button is clicked in the wizard.
+     *
+     * @memberof WizardNavigationService
+     */
+    public customButtonSubscription: Subscription;
 
     /**
      * Is notified when a Cancel button is clicked in the wizard. Notifies the wizard,
@@ -165,18 +171,18 @@ export class WizardNavigationService implements OnDestroy {
         }
     }
 
-     /**
-   * @memberof WizardNavigationService
-   */
-  private _movedToNextPage = new Subject<boolean>();
+    /**
+     * @memberof WizardNavigationService
+     */
+    private _movedToNextPage = new Subject<boolean>();
 
-  /**
-   * An observable used internally to alert the wizard that forward navigation
-   * has occurred. It is recommended that you use the Wizard.onMoveNext
-   * (clrWizardOnNext) output instead of this one.
-   *
-   * @memberof WizardNavigationService
-   */
+    /**
+     * An observable used internally to alert the wizard that forward navigation
+     * has occurred. It is recommended that you use the Wizard.onMoveNext
+     * (clrWizardOnNext) output instead of this one.
+     *
+     * @memberof WizardNavigationService
+     */
     public get movedToNextPage(): Observable<boolean> {
         return this._movedToNextPage.asObservable();
     }
@@ -198,7 +204,6 @@ export class WizardNavigationService implements OnDestroy {
     public get wizardFinished(): Observable<boolean> {
         return this._wizardFinished.asObservable();
     }
-
 
     /**
      * A boolean flag shared across the Wizard subcomponents that follows the value
@@ -223,9 +228,9 @@ export class WizardNavigationService implements OnDestroy {
      *
      * @memberof WizardNavigationService
      */
-        public get movedToPreviousPage(): Observable<boolean> {
-            return this._movedToPreviousPage.asObservable();
-        }
+    public get movedToPreviousPage(): Observable<boolean> {
+        return this._movedToPreviousPage.asObservable();
+    }
 
     /**
      * @memberof WizardNavigationService
@@ -288,6 +293,12 @@ export class WizardNavigationService implements OnDestroy {
             this.checkAndCommitCurrentPage('finish');
         });
 
+        this.customButtonSubscription = this.buttonService.customBtnClicked.subscribe((type: string) => {
+            if (!this.wizardStopNavigation) {
+                this.currentPage.customButtonClicked.emit(type);
+            }
+        });
+
         this.cancelButtonSubscription = this.buttonService.cancelBtnClicked.subscribe(() => {
             if (this.wizardStopNavigation) {
                 return;
@@ -314,6 +325,7 @@ export class WizardNavigationService implements OnDestroy {
         this.nextButtonSubscription.unsubscribe();
         this.dangerButtonSubscription.unsubscribe();
         this.finishButtonSubscription.unsubscribe();
+        this.customButtonSubscription.unsubscribe();
         this.cancelButtonSubscription.unsubscribe();
         this.pagesResetSubscription.unsubscribe();
     }
@@ -580,6 +592,22 @@ export class WizardNavigationService implements OnDestroy {
     }
 
     /**
+     * This is a public function that can be used to programmatically conclude
+     * the wizard.
+     *
+     * When invoked, this method will  initiate the work involved with finalizing
+     * and finishing the wizard workflow. Note that this method goes through all
+     * checks and event emissions as if Wizard.finish(false) had been called.
+     *
+     * In most cases, it makes more sense to use Wizard.finish(false).
+     *
+     * @memberof WizardNavigationService
+     */
+    public finish(): void {
+        this.checkAndCommitCurrentPage('finish');
+    }
+
+    /**
      * Programmatically moves the wizard to the page before the current page.
      *
      * In most instances, it makes more sense to call Wizard.previous()
@@ -607,5 +635,30 @@ export class WizardNavigationService implements OnDestroy {
         }
 
         this.currentPage = previousPage;
+    }
+
+    /**
+     * This is a public function that can be used to programmatically advance
+     * the user to the next page.
+     *
+     * When invoked, this method will move the wizard to the next page after
+     * successful validation. Note that this method goes through all checks
+     * and event emissions as if Wizard.next(false) had been called.
+     *
+     * In most cases, it makes more sense to use Wizard.next(false).
+     *
+     * @memberof WizardNavigationService
+     */
+    public next(): void {
+        if (this.currentPageIsLast) {
+        this.checkAndCommitCurrentPage('finish');
+        return;
+        }
+
+        this.checkAndCommitCurrentPage('next');
+
+        if (!this.wizardHasAltNext && !this.wizardStopNavigation) {
+            this._movedToNextPage.next(true);
+        }
     }
 }

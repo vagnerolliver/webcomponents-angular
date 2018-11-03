@@ -1,0 +1,9 @@
+
+
+<ul class="steps is-small">
+    <li class="step-item"
+        *ngFor="let page of pageService.pages"
+        app-wizard-stepnav-item [page]="page">
+    </li>
+
+</ul>
