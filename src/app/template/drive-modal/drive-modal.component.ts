@@ -9,31 +9,58 @@ import { ModalComponent } from '../../shared/modal/modal.component';
     templateUrl: './drive-modal.component.html',
     styleUrls: ['./drive-modal.component.sass']
 })
-export class DriveModalComponent extends ModalBase implements OnInit {
+export class DriveModalComponent implements OnInit {
 
     @ViewChild('meuModal') meuModal: any;
+    myModal: ModalService;
 
     constructor(
-        render: Renderer2,
-        elem: ElementRef,
-        @Inject(DOCUMENT) document: ElementRef
-    ) {
-        super(render, elem, document);
-    }
+        private modalService: ModalService
+    ) {}
 
-    ngOnInit() {}
-
-    onModal(title: string) {
-        this.open(title);
-    }
-
-    onClose() {
-        this.close();
-        // this.modal.close();
+    ngOnInit() {
+        this.openModalSaveContinuaae();
     }
 
     openModalTemplate() {
         this.meuModal.open();
     }
 
+    openModalSaveContinuaae() {
+
+    }
+
+    open() {
+        const myModal = this.modalService.initModal({
+            role: 'save',
+            id: 'modalSaveContinue',
+            title: 'Alerta',
+            btClose: false,
+            content: 'Descrição de marcação ra ra ra...',
+            actions: {
+                customClass: 'mt-40',
+                confirmLabelKey: 'Confirma'
+            }
+        }).subscribe((resp: any) => {
+            if (resp === 'cancel') {
+                console.log('resp cancel');
+                console.log(resp);
+            }
+
+            if (resp === 'confirm') {
+                console.log('resp confirm');
+                console.log(resp);
+            }
+        });
+
+        // myModal.onCancel.subscribe((resp: any) => {
+        //     console.log('cancel');
+        //     console.log(resp);
+        // });
+
+        // myModal.onConfirm.subscribe((resp: any) => {
+        //     console.log('confirm');
+        //     console.log(resp);
+        // });
+    }
 }

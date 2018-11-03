@@ -12,12 +12,4 @@ export class DriveAccordionComponent implements OnInit {
 
     ngOnInit() {}
 
-    onModal(title: string) {
-        this.modal.open(title);
-    }
-
-    onClose() {
-        this.modal.close();
-    }
-
 }
