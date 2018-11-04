@@ -63,6 +63,24 @@ export class ModalService implements OnInit {
         return this.visible;
     }
 
+    /**
+     * Recive object complex to create instance new Modal(data)
+     * if not recive any argument he to can instance new Modal()
+     * o construtor new Modal() too is configure when not recive
+     * any objet complexo from component
+     *
+     * after instance, is prepared all elemenents DOM by build()
+     * after call open() that set class visible
+     *
+     * Too subscription Emmiters onCancel and onConfirm, is importante
+     * to callback from component that invoke modal service
+     *
+     *
+     * @private
+     * @param {string, ModalActions} role actions
+     * @memberof ModalService
+     *
+     */
     initModal(modalConfig?: any): Observable<any> {
         return Observable.create((observer: Observer<any>) => {
             const modal: Modal = modalConfig ? new Modal(modalConfig) : new Modal();
