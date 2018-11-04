@@ -30,6 +30,16 @@ export class DriveModalComponent implements OnInit {
 
     }
 
+    open2() {
+        this.modalService.initModal({
+            actions: {
+                customClass: 'mt-40',
+                confirmLabelKey: 'Confirma',
+                confirmColor: 'is-primary'
+            }
+        }).subscribe();
+    }
+
     open() {
         const myModal = this.modalService.initModal({
             role: 'save',
@@ -39,30 +49,16 @@ export class DriveModalComponent implements OnInit {
             content: 'Descrição de marcação ra ra ra...',
             actions: {
                 customClass: 'mt-40',
-                confirmLabelKey: 'Confirma'
+                confirmLabelKey: 'Confirma',
             }
         }).subscribe((resp: any) => {
             if (resp === 'cancel') {
-                console.log('resp cancel');
-                console.log(resp);
                 myModal.unsubscribe();
             }
 
             if (resp === 'confirm') {
-                console.log('resp confirm');
-                console.log(resp);
                 myModal.unsubscribe();
             }
         });
-
-        // myModal.onCancel.subscribe((resp: any) => {
-        //     console.log('cancel');
-        //     console.log(resp);
-        // });
-
-        // myModal.onConfirm.subscribe((resp: any) => {
-        //     console.log('confirm');
-        //     console.log(resp);
-        // });
     }
 }

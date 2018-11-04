@@ -6,7 +6,7 @@ import { Injectable,
          OnInit,
          EventEmitter,
          Output } from '@angular/core';
-import { Observable, Subject, Observer } from 'rxjs';
+import { Observable, Subject, Observer, Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/platform-browser';
 import { Modal, ModalActions } from './modal.model';
 
@@ -31,13 +31,15 @@ export class ModalService implements OnInit {
     cancelLabelKey: string;
     confirmLabelKey: string;
 
+    private subscriptionCancel: Subscription;
+    private subscriptionConfirm: Subscription;
+
     // tslint:disable-next-line:no-output-on-prefix
     @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
     // tslint:disable-next-line:no-output-on-prefix
     @Output() onConfirm: EventEmitter<any> = new EventEmitter<any>();
 
     subject = new Subject<any>();
-    modalCurrent;
 
     constructor(
         rendererFactory: RendererFactory2,
@@ -51,8 +53,7 @@ export class ModalService implements OnInit {
         LABEL_DELETE = 'DELETE';
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     set isVisible(value: boolean) {
         this.visible = value;
@@ -62,28 +63,36 @@ export class ModalService implements OnInit {
         return this.visible;
     }
 
-    initModal(modal: any): Observable<any> {
+    initModal(modalConfig?: any): Observable<any> {
         return Observable.create((observer: Observer<any>) => {
-            const _modal: Modal = new Modal(modal);
+            const modal: Modal = modalConfig ? new Modal(modalConfig) : new Modal();
+            this.build(modal);
+            this.open(modal.id);
 
-            if (!this.isVisible) {
-                this.build(_modal);
-                this.isVisible = true;
-            }
-
-            this.onCancel.subscribe(() => {
-                observer.next('cancel');
+            this.subscriptionCancel = this.onCancel.subscribe(async () => {
+                await observer.next('cancel');
+                this.subscriptionCancel.unsubscribe();
             });
 
-            this.onConfirm.subscribe(() => {
-                observer.next('confirm');
+            this.subscriptionConfirm = this.onConfirm.subscribe(async () => {
+                await observer.next('confirm');
+                this.subscriptionConfirm.unsubscribe();
             });
+
         });
+    }
 
+    open(id?: string) {
+        if ( id === this.id ) {
+            this.subject.next({ action: 'open', id: this.id });
+            this.renderer.addClass(this.modal, 'is-active');
+            this.isVisible = true;
+        }
     }
 
     close() {
         this.renderer.removeChild(this.document.body, this.modal);
+        this.renderer.removeClass(this.modal, 'is-active');
         this.renderer.removeClass(this.document.body.parentElement, 'is-clipped');
         this.isVisible = false;
     }
@@ -118,6 +127,17 @@ export class ModalService implements OnInit {
         });
     }
 
+    /**
+     * Show actions
+     * Config's actions button is cancel or confirm to can what show
+     * Too config color button confirm that is relateds set modal "role" if
+     * not attr "confirmColor" is set
+     *
+     * @private
+     * @param {string, ModalActions} role actions
+     * @memberof ModalService
+     *
+     */
     private setModalActions(role: string, actions: ModalActions) {
         if (role === 'info') {
             if (actions.cancelLabelKey ) {
@@ -142,8 +162,17 @@ export class ModalService implements OnInit {
         }
 
         this.buttonClass = this.setColorButtonConfirm(role);
+        this.buttonClass = actions.confirmColor || this.buttonClass;
     }
 
+    /**
+     *  Define size modal, use with build()
+     *
+     * @private
+     * @param {string} size
+     * @memberof ModalService
+     *
+     */
     private setSize(size: string) {
         switch (size) {
             case 'small': size = 'is-small'; break;
@@ -155,6 +184,14 @@ export class ModalService implements OnInit {
         return size;
     }
 
+    /**
+     *  set color button confirm used build()
+     *
+     * @private
+     * @param {string} role
+     * @memberof ModalService
+     *
+     */
     private setColorButtonConfirm(role: string) {
         let color = '';
 
@@ -166,6 +203,15 @@ export class ModalService implements OnInit {
         return color;
     }
 
+    /**
+     *  define align container
+     *  position default is right
+     *
+     * @private
+     * @param {string} position
+     * @memberof ModalService
+     *
+     */
     private setActionsPosition(position: string) {
         switch (position) {
             case 'left': position = 'is-left'; break;
@@ -175,6 +221,21 @@ export class ModalService implements OnInit {
         return position;
     }
 
+    // Core renderer modal DOM
+    // Create, append, set attributes DOM modal
+    // Settings elements configHeader(), configBody(), configActions()
+    /**
+     * Core Renderer2 inject modal DOM
+     * argument recive instance of new Modal()
+     * Create, append, set attributes DOM of page
+     * Build set tree parts do modal: header, body and footer
+     *
+     *
+     * @private
+     * @param {Modal} onModal
+     * @memberof ModalService
+     *
+     */
     private build(onModal: Modal) {
         const modalHeader  = onModal;
         const modalBody = onModal.content;
@@ -226,8 +287,8 @@ export class ModalService implements OnInit {
     }
 
     /**
-     * Create modal header arguments by component
-     * TODO: Component send data text: string
+     * Configure elements modal header argument from build
+     * build() receive instance new Modal()
      *
      * @private
      * @param {Modal} modal
@@ -258,8 +319,8 @@ export class ModalService implements OnInit {
     }
 
     /**
-     * ElementRef text
-     * TODO: Component send data text: string
+     * Configure elements modal header argument from build
+     * build() receive instance new Modal()
      *
      * @private
      * @param {string} body
@@ -273,6 +334,7 @@ export class ModalService implements OnInit {
         const elemParagraph = this.renderer.createElement('p');
 
         this.renderer.addClass(elemMain, 'modal-card-body');
+        this.renderer.addClass(elemParagraph, 'mb-1');
 
         this.renderer.appendChild(elemParagraph, textMain);
         this.renderer.appendChild(elemMain, elemParagraph);
@@ -281,8 +343,9 @@ export class ModalService implements OnInit {
     }
 
     /**
-     * Arguments actions true/false show buttons cancel and continue
-     * TODO: Component need send data actions? :any[]
+     * Configure elements modal header argument from build
+     * build() receive instance new Modal()
+     *
      *
      * @private
      * @param {Modal} modal
