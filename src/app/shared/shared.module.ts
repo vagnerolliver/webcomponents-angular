@@ -16,6 +16,7 @@ import { WizardStepnavItemComponent } from './wizard/wizard-stepnav/wizard-stepn
 import { WizardPageNavTitleDirective } from './wizard/wizard-page-nav-title.directive';
 import { WizardPageButtonComponent } from './wizard/wizard-page-buttons/wizard-page-buttons.component';
 import { WizardPageButtonsDirective } from 'src/app/shared/wizard/wizard-page-buttons/wizard-page-buttons.directive';
+import {HighlightComponent} from './highlight/highlight.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,7 @@ import { WizardPageButtonsDirective } from 'src/app/shared/wizard/wizard-page-bu
     WizardPageNavTitleDirective,
     WizardPageButtonComponent,
     WizardPageButtonsDirective,
+    HighlightComponent
   ],
   exports: [
     ModalComponent,
@@ -52,6 +54,7 @@ import { WizardPageButtonsDirective } from 'src/app/shared/wizard/wizard-page-bu
     WizardPageNavTitleDirective,
     WizardPageButtonComponent,
     WizardPageButtonsDirective,
+    HighlightComponent
   ],
   providers: [ModalService]
 })

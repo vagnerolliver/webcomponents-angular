@@ -9,8 +9,9 @@ import { AppRoutingModule } from './/app-routing.module';
 import { DriveModalComponent } from './template/drive-modal/drive-modal.component';
 import { DriveAccordionComponent } from './template/drive-accordion/drive-accordion.component';
 import { DriveFormBuilderComponent } from './template/drive-form-builder/drive-form-builder.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { DriveWizardComponent } from './template/drive-wizard/drive-wizard.component';
+import { AutocompleteComponent } from './autocomplete/autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -20,13 +21,15 @@ import { DriveWizardComponent } from './template/drive-wizard/drive-wizard.compo
     DriveModalComponent,
     DriveAccordionComponent,
     DriveFormBuilderComponent,
-    DriveWizardComponent
+    DriveWizardComponent,
+    AutocompleteComponent
   ],
   imports: [
     BrowserModule,
     SharedModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

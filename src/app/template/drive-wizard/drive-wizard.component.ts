@@ -16,6 +16,9 @@ export class DriveWizardComponent implements OnInit {
   public showWarning = false;
 
   public doCustomClick(buttonType: string): void {
+
+    debugger;
+
     if ('custom-next' === buttonType) {
       this.wizard.next(false);
     }

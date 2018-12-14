@@ -1,0 +1,50 @@
+textarea
+    max-height: 600px
+    min-height: 120px
+    color: #333
+
+.autocomplete
+    //display: none
+
+    &.is-show
+        display: block
+
+    .is-active
+        background-color: black
+        color: #fff
+
+
+.highlight
+    position: relative
+
+.highlighted
+    background: #ffc6f6
+    color: black
+    display: inline-block
+    position: relative
+
+
+.highlight
+    *
+        z-index: 10
+        font-size: 16px
+
+    .filtered
+        color: transparent
+        white-space: pre-wrap
+        position: absolute
+        top: 0
+        z-index: 5
+        line-height: 1.5
+
+    input ~ .filtered
+        top: 3px
+
+    .autocomplete
+        background-color: #fff
+        position: absolute
+
+.step-modal
+    .filtered
+        font-size: 1rem
+        width: 100%

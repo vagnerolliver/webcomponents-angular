@@ -1,0 +1,18 @@
+<appHighlight [(content)]="content">
+    <textarea [(ngModel)]="content" #textAreaElement value="" (keyup)="filterVars(content, $event); onKeyDown($event)"></textarea>
+</appHighlight>
+
+<!--<textarea [(ngModel)]="value" ></textarea>-->
+<pre>
+    {{ content}}
+</pre>
+
+// autocomple
+<div class="autocomplete">
+   <div  *ngFor="let item of listVariables; let i = index" [attr.data-index]="i" [class.is-active]="itemListCurrentFocus === i" (click)="onClick()">{{ i }} - {{ item }}</div>
+</div>
+
+<!--// lista variable-->
+<!--<pre>{{ this.listVariables }}</pre>-->
+
+<!--// valor textarea-->
