@@ -2,7 +2,7 @@ import {Component, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/c
 import {ɵAnimationGroupPlayer} from '@angular/animations';
 
 export const mockVarsAutocomplete: any = [
-    '#{name} ola tudo bem',
+    '#{name}',
     '#{name_first}',
     '#{name_last}',
     '#{name_middle}',
@@ -18,173 +18,99 @@ export const mockVarsAutocomplete: any = [
     templateUrl: './autocomplete.component.html',
     // styleUrls: ['./autocomplete.component.sass']
 })
-export class AutocompleteComponent implements OnInit, OnChanges {
+export class AutocompleteComponent implements OnInit {
 
     content: string;
     listVariables: any[];
-    selectedVariable: string;
-    itemListCurrentFocus: number;
+    itemListVariablesSelected: number;
 
-    @ViewChild('textAreaElement') textAreaElement;
+    query = {
+      'text': '',
+      'headPos': 0,
+      'endPos': 0
+    };
 
     constructor() {
-        this.itemListCurrentFocus = 0;
-        this.content = ' ';
-        this.listVariables = mockVarsAutocomplete;
-
+        this.itemListVariablesSelected = 0;
+        this.content = '';
     }
 
     ngOnInit() {}
 
-    ngOnChanges(changes: SimpleChanges) {
-        console.log(changes);
-    }
+    matcher(subtext: string): any {
+      let flag = '#{'.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+      flag = '(?:^|\\s)' + flag;
 
-    removePosContent(arrayContent: any[], posRemove: number) {
-        arrayContent.splice(posRemove, 1);
-        this.content = arrayContent.join(' ');
-    }
+      const _a = decodeURI('%C3%80');
+      const _y = decodeURI('%C3%BF');
 
-    verifyContentKey(char: string, event: any) {
-        const arrayContent = this.content.split('');
-        const prevChar = this.textAreaElement.nativeElement.selectionStart - 1;
+      const space =  ' ';
+      const regexp = new RegExp(flag + '([A-Za-z' + _a + '-' + _y + '0-9_' + space + '\'\.\+\-]*)$|' + flag + '([^\\x00-\\xff]*)$', 'gi');
+      const match = regexp.exec(subtext);
 
-        console.log(this.textAreaElement.nativeElement.selectionStart);
-        console.log('prevChar');
-        console.log(arrayContent[prevChar]);
-
-        if (char === '{') {
-            console.log('entrou aqui');
-            console.log(char);
-
-             if ( arrayContent[prevChar] === '#' ) {
-                 console.log('entrou aqui também');
-                 console.log(arrayContent[prevChar]);
-
-                console.log('start autocomplete'); // chama o autocomplete
-             }
-        }
-
-        // console.log('Content arrayContent');
-        // console.log(arrayContent);
-    }
-
-    matcher(flag: string, subtext: string) {
-      const regex = /#{+/g;
-      const match = regex.exec(subtext);
-
-      if ( match !== null )  {
-          return match;
+      if (match) {
+         return match[1];
       }
 
-      return null;
+      return;
     }
 
-    getQuery(text: string, selectionStart: number) {
-        const content = text;
-        const caretPos = selectionStart;
+    suggestionsVariables(content: string, event: any) {
+        const selectionStart = event.target.selectionStart;
+        const subtext = content.slice(0, selectionStart );
+        const query = this.matcher(subtext);
 
-        const subtext = content.slice(0, caretPos);
-
-        const match = this.matcher('#{', subtext);
-
-        const isValid = typeof match !== null;
-
-        if ( !isValid ) {
-            return false;
+        if ( typeof query === 'undefined') {
+            this.query.text = '';
+            return;
         }
 
-        const query = match.input;
-        const start = match.index;
-        
-        if (isString && _query.length < 0) {
-            return false;
-        } else if (isString && _query.length > 0) {
+        const start = selectionStart - query.length
+        const end = start + query.length
 
-            const end = _start + _query.length;
+        this.query = {
+          'text': query,
+          'headPos': start,
+          'endPos': end
+        };
 
-            const q = {
-                'text': query,
-                'headPos': index,
-                'endPos': end
-            };
+        this.listVariables =  mockVarsAutocomplete.filter( res => {
+          const result = res.substr(0, res.length).toUpperCase().indexOf(this.query.text.toUpperCase());
+          return result > -1 ? res : null;
+        });
 
-            return query;
-        } else {
-            return false;
-        }
+        this.chooseVariable(event);
     }
 
-    filterVars(text: string, event: any) {
-        const query = this.getQuery(text, this.textAreaElement.nativeElement.selectionStart);
-
-        console.log('query');
-        console.log(query);
-
-        return false;
-
-        const { key } = event;
-
-        this.verifyContentKey(key, event);
-
-        // console.log(event);
-        //
-        // console.log('this.textAreaElement.nativeElement.selectionStart');
-        // console.log(this.textAreaElement.nativeElement.selectionStart);
-        //
-        // console.log('this.textAreaElement.nativeElement.selectionEnd');
-        // console.log(this.textAreaElement.nativeElement.selectionEnd);
-        //
-        // console.log('text length');
-        // console.log(text.length);
-        // console.log(text.split('').length);
-        //
-        // console.log('event.key');
-        // console.log(event.key);
-
-        // console.log('this.content');
-        // console.log(this.content);
-
-        if ( text.length < 3 ) {
-            this.itemListCurrentFocus = -1;
-            this.selectedVariable = '';
-        } else {
-            this.listVariables =  mockVarsAutocomplete.filter( res => {
-                return res.substr(0, text.length).toUpperCase() === text.toUpperCase();
-            });
-        }
+    insertVariableAtContent(variable: string) {
+        const startStr = this.content.slice(0, this.query.headPos - 2);
+        this.content = startStr + variable + (this.content.slice(this.query.endPos || 0));
     }
 
-    onKeyDown(e: any) {
+    chooseVariable(e: any) {
+        e.preventDefault();
         if (e.keyCode === 40) {
-            this.itemListCurrentFocus++;
+            this.itemListVariablesSelected++;
         } else if (e.keyCode === 38) {
-            this.itemListCurrentFocus--;
+            this.itemListVariablesSelected--;
         } else if (e.keyCode === 13) {
-            e.preventDefault();
-            if (this.itemListCurrentFocus > -1) {
-                this.content = this.selectedVariable = this.listVariables[this.itemListCurrentFocus];
+            if (this.itemListVariablesSelected > -1) {
+                this.insertVariableAtContent(this.listVariables[this.itemListVariablesSelected]);
             }
             return false;
         }
 
-        if (this.itemListCurrentFocus  >= this.listVariables.length) {
-            this.itemListCurrentFocus = 0;
+        if (this.itemListVariablesSelected  >= this.listVariables.length) {
+            this.itemListVariablesSelected = 0;
         }
 
-        if (this.itemListCurrentFocus < 0)  {
-            this.itemListCurrentFocus = (this.listVariables.length - 1);
+        if (this.itemListVariablesSelected < 0)  {
+            this.itemListVariablesSelected = (this.listVariables.length - 1);
         }
 
      }
 
-    onPressKey(): any {
-        if ( this.content !== this.selectedVariable && this.listVariables.length > 0 ) {
-            return true;
-        }
-    }
-
-    onClick(e: any) {
-        this.content = this.selectedVariable = this.listVariables[this.itemListCurrentFocus];
+    onClick(index: number) {
+        this.insertVariableAtContent(this.listVariables[index]);
     }
 }

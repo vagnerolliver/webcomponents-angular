@@ -1,18 +1,11 @@
 <appHighlight [(content)]="content">
-    <textarea [(ngModel)]="content" #textAreaElement value="" (keyup)="filterVars(content, $event); onKeyDown($event)"></textarea>
+    <textarea [(ngModel)]="content" (keyup)="suggestionsVariables(content,$event);" #textAreaElement></textarea>
 </appHighlight>
-
-<!--<textarea [(ngModel)]="value" ></textarea>-->
-<pre>
-    {{ content}}
-</pre>
-
 // autocomple
-<div class="autocomplete">
-   <div  *ngFor="let item of listVariables; let i = index" [attr.data-index]="i" [class.is-active]="itemListCurrentFocus === i" (click)="onClick()">{{ i }} - {{ item }}</div>
+<div class="autocomplete" *ngIf="query.text.length > 0 && listVariables.length > 0">
+  <div  *ngFor="let item of listVariables; let i = index" [attr.data-index]="i" [class.is-active]="itemListVariablesSelected === i" (click)="onClick(i)">{{ i }} - {{ item }}</div>
 </div>
 
-<!--// lista variable-->
-<!--<pre>{{ this.listVariables }}</pre>-->
+// my query
+<pre>{{ query | json }}</pre>
 
-<!--// valor textarea-->
