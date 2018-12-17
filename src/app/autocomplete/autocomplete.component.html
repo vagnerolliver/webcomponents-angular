@@ -1,9 +1,13 @@
-<appHighlight [(content)]="content">
-    <textarea [(ngModel)]="content" (keyup)="suggestionsVariables(content,$event);" #textAreaElement></textarea>
-</appHighlight>
-// autocomple
-<div class="autocomplete" *ngIf="query.text.length > 0 && listVariables.length > 0">
-  <div  *ngFor="let item of listVariables; let i = index" [attr.data-index]="i" [class.is-active]="itemListVariablesSelected === i" (click)="onClick(i)">{{ i }} - {{ item }}</div>
+<div class="container">
+    <appHighlight [(content)]="content">
+        <textarea [(ngModel)]="content" (keyup)="suggestionsVariables(content,$event);" #textAreaElement></textarea>
+    </appHighlight>
+    // autocomple
+    <div class="autocomplete"
+         [ngStyle]="{position: 'absolute', 'top': top + 'px', 'left': left +'px'}"  *ngIf="query.text.length > 0 && listVariables.length > 0">
+      <div  *ngFor="let item of listVariables; let i = index" [attr.data-index]="i" [class.is-active]="itemListVariablesSelected === i" (click)="onClick(i)">{{ i }} - {{ item }}</div>
+    </div>
+
 </div>
 
 // my query

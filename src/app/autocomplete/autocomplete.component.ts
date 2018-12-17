@@ -1,5 +1,6 @@
 import {Component, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {ɵAnimationGroupPlayer} from '@angular/animations';
+
+import { CaretTextarea } from './caret-textarea.component';
 
 export const mockVarsAutocomplete: any = [
     '#{name}',
@@ -29,6 +30,10 @@ export class AutocompleteComponent implements OnInit {
       'headPos': 0,
       'endPos': 0
     };
+
+
+    top: number;
+    left: number;
 
     constructor() {
         this.itemListVariablesSelected = 0;
@@ -79,6 +84,11 @@ export class AutocompleteComponent implements OnInit {
           return result > -1 ? res : null;
         });
 
+        const { top, left } = CaretTextarea.getCaretCoordinates(event.target, this.query.headPos);
+
+        this.top = top + 20;
+        this.left = left;
+
         this.chooseVariable(event);
     }
 
@@ -96,6 +106,7 @@ export class AutocompleteComponent implements OnInit {
         } else if (e.keyCode === 13) {
             if (this.itemListVariablesSelected > -1) {
                 this.insertVariableAtContent(this.listVariables[this.itemListVariablesSelected]);
+                this.clearQuery();
             }
             return false;
         }
@@ -107,10 +118,14 @@ export class AutocompleteComponent implements OnInit {
         if (this.itemListVariablesSelected < 0)  {
             this.itemListVariablesSelected = (this.listVariables.length - 1);
         }
+     }
 
+     clearQuery() {
+        this.query.text = '';
      }
 
     onClick(index: number) {
         this.insertVariableAtContent(this.listVariables[index]);
+        this.clearQuery();
     }
 }
